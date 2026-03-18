@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antigravity Academy - Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  .bg-grid {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(120, 80, 255, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 120, 50, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 50% 80%, rgba(50, 200, 255, 0.04) 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 1; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .logo {
+    font-size: 64px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 30px rgba(120, 80, 255, 0.4));
+  }
+  .header h1 {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #f97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 18px;
+    color: #8888a0;
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* Flow Container */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  /* Phase Cards */
+  .phase {
+    display: grid;
+    grid-template-columns: 100px 1fr 340px;
+    gap: 24px;
+    align-items: start;
+    padding: 32px 0;
+    position: relative;
+  }
+
+  .phase-number {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-top: 20px;
+  }
+  .phase-number .num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800;
+    position: relative;
+    z-index: 2;
+  }
+  .phase-number .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #666;
+    text-align: center;
+  }
+
+  /* Connector line */
+  .phase-number::after {
+    content: '';
+    position: absolute;
+    top: 76px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: calc(100% - 40px);
+    z-index: 1;
+  }
+  .phase:last-child .phase-number::after { display: none; }
+
+  .phase-card {
+    border-radius: 16px;
+    padding: 28px 32px;
+    border: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.12);
+  }
+  .phase-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+  }
+
+  .phase-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .phase-card .role {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+  .phase-card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #b0b0c0;
+    margin-bottom: 16px;
+  }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* Side info */
+  .phase-meta {
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .phase-meta h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+  .meta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: #9090a8;
+  }
+  .meta-item .icon { font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  /* Phase-specific colors */
+  .phase-1 .num { background: linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow: 0 0 24px rgba(99,102,241,0.4); }
+  .phase-1 .phase-number::after { background: linear-gradient(to bottom, #6366f1, #f59e0b); }
+  .phase-1 .phase-card { background: rgba(99,102,241,0.05); }
+  .phase-1 .phase-card::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+  .phase-1 .phase-card h2 { color: #a5b4fc; }
+
+  .phase-2 .num { background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 0 24px rgba(245,158,11,0.4); }
+  .phase-2 .phase-number::after { background: linear-gradient(to bottom, #f59e0b, #6366f1); }
+  .phase-2 .phase-card { background: rgba(245,158,11,0.05); }
+  .phase-2 .phase-card::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+  .phase-2 .phase-card h2 { color: #fcd34d; }
+
+  .phase-3 .num { background: linear-gradient(135deg, #6366f1, #06b6d4); box-shadow: 0 0 24px rgba(99,102,241,0.4); }
+  .phase-3 .phase-number::after { background: linear-gradient(to bottom, #6366f1, #10b981); }
+  .phase-3 .phase-card { background: rgba(6,182,212,0.05); }
+  .phase-3 .phase-card::before { background: linear-gradient(90deg, #6366f1, #06b6d4); }
+  .phase-3 .phase-card h2 { color: #67e8f9; }
+
+  .phase-4 .num { background: linear-gradient(135deg, #10b981, #6366f1); box-shadow: 0 0 24px rgba(16,185,129,0.4); }
+  .phase-4 .phase-card { background: rgba(16,185,129,0.05); }
+  .phase-4 .phase-card::before { background: linear-gradient(90deg, #10b981, #6366f1); }
+  .phase-4 .phase-card h2 { color: #6ee7b7; }
+
+  /* Loop indicator */
+  .loop-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 0;
+    margin: -8px 0;
+    position: relative;
+    z-index: 3;
+  }
+  .loop-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .loop-badge.review-loop {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+  }
+  .loop-badge.creative-loop {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Bottom section: Principles */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .principle {
+    padding: 24px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .principle .icon { font-size: 28px; margin-bottom: 12px; }
+  .principle h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .principle p { font-size: 13px; color: #8888a0; line-height: 1.6; }
+
+  /* Onboarding highlight */
+  .onboarding-banner {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .onboarding-banner .icon { font-size: 40px; }
+  .onboarding-banner h3 { font-size: 18px; font-weight: 700; color: #a5b4fc; margin-bottom: 4px; }
+  .onboarding-banner p { font-size: 14px; color: #8888a0; line-height: 1.6; }
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .phase { grid-template-columns: 60px 1fr; }
+    .phase-meta { display: none; }
+    .principles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="container">
+
+  <div class="header">
+    <div class="logo">&#9651;</div>
+    <h1>Antigravity Academy</h1>
+    <div class="subtitle">The AI Development School</div>
+  </div>
+
+  <div class="onboarding-banner">
+    <div class="icon">&#128640;</div>
+    <div>
+      <h3>Phase 0: The Onboarding Interview</h3>
+      <p>Before a single line of code is written, the Student conducts a structured interview with you. Goal: a complete project brief that aligns all agents toward the same objective. The brief is saved as <code>project_brief.md</code> and is the shared source of truth for all phases.</p>
+    </div>
+  </div>
+
+  <div class="flow">
+
+    <!-- Phase 1: Student -->
+    <div class="phase phase-1">
+      <div class="phase-number">
+        <div class="num">1</div>
+        <div class="label">Phase</div>
+      </div>
+      <div class="phase-card">
+        <h2>&#127891; The Student</h2>
+        <div class="role">Prompt Architect &mdash; Executing Agent</div>
+        <p>The Student receives the project mandate and builds the first version of the application. They first conduct the onboarding interview, generate the <code>project_brief.md</code> from it, and then implement the code. They follow the 3-layer architecture: directives define the goal, they orchestrate, execution scripts handle the deterministic work.</p>
+        <div class="tag-list">
+          <span class="tag">Onboarding Interview</span>
+          <span class="tag">Code Generation</span>
+          <span class="tag">project_brief.md</span>
+          <span class="tag">3-Layer Architecture</span>
+        </div>
+      </div>
+      <div class="phase-meta">
+        <h4>Inputs &amp; Outputs</h4>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: User vision (free text)</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: project_brief.md</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: Working App v1</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: Updated Directives</div>
+        <h4 style="margin-top:16px">Core Principle</h4>
+        <div class="meta-item"><span class="icon">&#9888;</span> Deterministic scripts instead of probabilistic code</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Examiner -->
+    <div class="phase phase-2">
+      <div class="phase-number">
+        <div class="num">2</div>
+        <div class="label">Phase</div>
+      </div>
+      <div class="phase-card">
+        <h2>&#128270; The Examiner</h2>
+        <div class="role">Project Supervisor &mdash; Agentic Agent 1</div>
+        <p>The Examiner is the strict reviewer. They have the original <code>project_brief.md</code> in their instructions and know exactly what was required. They open the app in Chrome, systematically click through every function, take screenshots, mark errors with arrows, and write precise correction prompts for the Student. <strong>Fresh context window</strong> &mdash; no context pollution.</p>
+        <div class="tag-list">
+          <span class="tag">Chrome Automation</span>
+          <span class="tag">Screenshot Analysis</span>
+          <span class="tag">Error Annotation</span>
+          <span class="tag">Correction Prompts</span>
+        </div>
+      </div>
+      <div class="phase-meta">
+        <h4>Inputs &amp; Outputs</h4>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: project_brief.md</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: App URL / local server</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: Annotated screenshots</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: Correction prompts</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: examiner_report.md</div>
+        <h4 style="margin-top:16px">Core Principle</h4>
+        <div class="meta-item"><span class="icon">&#9888;</span> Fresh context &mdash; no bias from Student's conversation</div>
+      </div>
+    </div>
+
+    <!-- Loop Indicator -->
+    <div class="loop-indicator">
+      <div class="loop-badge review-loop">&#128260; REVIEW LOOP &mdash; Repeat Phase 2 &#8596; Phase 3 until error-free</div>
+    </div>
+
+    <!-- Phase 3: Revision -->
+    <div class="phase phase-3">
+      <div class="phase-number">
+        <div class="num">3</div>
+        <div class="label">Phase</div>
+      </div>
+      <div class="phase-card">
+        <h2>&#128736; The Revision</h2>
+        <div class="role">Student Round 2+ &mdash; Iterative Fixer</div>
+        <p>The same Student receives the Examiner's correction prompts and works through them systematically. Every fix is documented. After each round the Examiner reviews again. The loop only ends when the Examiner finds <strong>zero errors</strong>. Every correction flows back into the directives (Self-Annealing).</p>
+        <div class="tag-list">
+          <span class="tag">Fix-It Prompts</span>
+          <span class="tag">Iterative</span>
+          <span class="tag">Self-Annealing</span>
+          <span class="tag">Documentation</span>
+        </div>
+      </div>
+      <div class="phase-meta">
+        <h4>Inputs &amp; Outputs</h4>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: examiner_report.md</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: Correction prompts</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: Fixed app</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: revision_log.md</div>
+        <h4 style="margin-top:16px">Exit Criterion</h4>
+        <div class="meta-item"><span class="icon">&#9989;</span> Examiner confirms: 0 errors, all features per brief implemented</div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Creative Director -->
+    <div class="phase phase-4">
+      <div class="phase-number">
+        <div class="num">4</div>
+        <div class="label">Phase</div>
+      </div>
+      <div class="phase-card">
+        <h2>&#127912; The Creative Director</h2>
+        <div class="role">Subject Expert &mdash; Agentic Agent 2</div>
+        <p>The Creative Director is the experienced professor. They know the <code>project_brief.md</code>, use the app like a real user in Chrome, and evaluate holistically: What's missing? Where is the UX unnecessarily complex? Which features would multiply the value by ten? They present their suggestions <strong>to the User</strong> (not the Student). The user decides which improvements get implemented &mdash; and the cycle starts again.</p>
+        <div class="tag-list">
+          <span class="tag">Holistic Evaluation</span>
+          <span class="tag">UX Analysis</span>
+          <span class="tag">10x Improvements</span>
+          <span class="tag">Human-in-the-Loop</span>
+        </div>
+      </div>
+      <div class="phase-meta">
+        <h4>Inputs &amp; Outputs</h4>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: project_brief.md</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Input: Finished, bug-free app</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: Improvement suggestions</div>
+        <div class="meta-item"><span class="icon">&#8594;</span> Output: New prompts (user-approved)</div>
+        <h4 style="margin-top:16px">Core Principle</h4>
+        <div class="meta-item"><span class="icon">&#9888;</span> Only 10x improvements &mdash; no marginal optimizations</div>
+      </div>
+    </div>
+
+    <!-- Creative Loop Indicator -->
+    <div class="loop-indicator">
+      <div class="loop-badge creative-loop">&#128260; CREATIVE LOOP &mdash; User selects improvements &#8594; Back to Phase 1</div>
+    </div>
+
+  </div>
+
+  <!-- Principles -->
+  <div class="principles">
+    <div class="principle">
+      <div class="icon">&#128279;</div>
+      <h3>project_brief.md</h3>
+      <p>The shared source of truth. Generated during onboarding and read by all agents. No agent works without this document.</p>
+    </div>
+    <div class="principle">
+      <div class="icon">&#128257;</div>
+      <h3>Self-Annealing</h3>
+      <p>Every correction flows back into the directives. The system becomes smarter with each run. Mistakes only happen once.</p>
+    </div>
+    <div class="principle">
+      <div class="icon">&#128101;</div>
+      <h3>Human-in-the-Loop</h3>
+      <p>The Creative Director presents suggestions to the User &mdash; not the Student. The human decides what gets implemented.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
