@@ -23,14 +23,14 @@ const CustomTooltip = ({ active, payload, label }) => {
         Experiment #{data.experiment}
       </div>
       <div style={{ color: '#3fb950' }}>
-        val_bpb: {data.valBpb.toFixed(6)}
+        Qualität: {data.valBpb.toFixed(6)}
       </div>
       <div style={{ color: '#58a6ff' }}>
-        best: {data.best.toFixed(6)}
+        Bestwert: {data.best.toFixed(6)}
       </div>
       {data.isRecord && (
         <div style={{ color: '#bc8cff', marginTop: '4px', fontWeight: 700 }}>
-          🏆 New Record!
+          🏆 Neuer Rekord!
         </div>
       )}
     </div>

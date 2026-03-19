@@ -1,0 +1,14 @@
+[project]
+name = "autoresearch-engine"
+version = "0.1.0"
+description = "AutoResearch MLX Training Engine for Apple Silicon"
+requires-python = ">=3.10"
+dependencies = [
+    "mlx>=0.24.0",
+    "numpy>=1.26",
+    "pyarrow>=14.0",
+    "rustbpe>=0.1",
+    "tiktoken>=0.6",
+    "requests>=2.31",
+    "modal>=1.0",
+]
